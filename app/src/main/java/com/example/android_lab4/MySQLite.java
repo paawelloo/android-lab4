@@ -7,16 +7,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class MySQLite extends SQLiteOpenHelper {
-    private static final int
-    DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 1;
 
     public MySQLite (Context context){
-        super (context, "animalsDB", null, DATABASE_VERSION;
+        super (context, "animals", null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase database){
-        String DATABASE_CREATE = "create table animals " +
+        String DATABASE_CREATE =
+                "create table animals " +
                 "(_id integer primary key autoincrement," +
                 "gatunek text not null," +
                 "kolor text not null," +
@@ -46,7 +46,8 @@ public class MySQLite extends SQLiteOpenHelper {
 
     public void usun(String id){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete("animals", "_id = ?", new String[] (id));
+        db.delete("animals", "_id = ?",
+                new String[] {id});
         db.close();
     }
 
@@ -81,6 +82,8 @@ public class MySQLite extends SQLiteOpenHelper {
 
         Animal zwierz = new Animal(cursor.getString(1), cursor.getString(2), cursor.getFloat(3), cursor.getString(4));
         zwierz.setId(Integer.parseInt(cursor.getString(0)));
+
+        return zwierz;
     }
 
     public Cursor lista(){
