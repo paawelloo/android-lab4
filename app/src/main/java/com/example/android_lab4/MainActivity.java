@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,13 +18,9 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
+    MySQLite db = new MySQLite(this);
     private ArrayList<String> target;
     private SimpleCursorAdapter adapter;
-
-    MySQLite db = new MySQLite(this);
-    //SQLiteDatabase db;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +45,16 @@ public class MainActivity extends AppCompatActivity {
                 //this.adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, this.target);
         ListView listview = (ListView) findViewById(R.id.listview);
         listview.setAdapter(this.adapter);
+        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapter, View view, int pos, long id){
+                TextView name = (TextView) view.findViewById(android.R.id.text1);
+                Animal zwierz = db.pobierz(Integer.parseInt(name.getText().toString()));
+                Intent intencja = new Intent (getApplicationContext(), DodajWpis.class);
+                intencja.putExtra("element", zwierz);
+                startActivityForResult (intencja, 2);
+            }
+        });
     }
 
     @Override
@@ -77,6 +86,15 @@ public class MainActivity extends AppCompatActivity {
             adapter.changeCursor(db.lista());
             adapter.notifyDataSetChanged();
         }
+
+        if (requestCode == 2 && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Animal nowy = (Animal) extras.getSerializable("nowy");
+            this.db.aktualizuj(nowy);
+            adapter.changeCursor(db.lista());
+            adapter.notifyDataSetChanged();
+        }
+
     }
 
 
