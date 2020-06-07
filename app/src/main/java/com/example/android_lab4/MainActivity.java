@@ -42,7 +42,8 @@ public class MainActivity extends AppCompatActivity {
                 SimpleCursorAdapter.IGNORE_ITEM_VIEW_TYPE
         );
 
-                //this.adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, this.target);
+        //this.adapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, this.target);
+
         ListView listview = (ListView) findViewById(R.id.listview);
         listview.setAdapter(this.adapter);
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -53,6 +54,22 @@ public class MainActivity extends AppCompatActivity {
                 Intent intencja = new Intent (getApplicationContext(), DodajWpis.class);
                 intencja.putExtra("element", zwierz);
                 startActivityForResult (intencja, 2);
+            }
+        });
+
+        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                TextView name = (TextView) view.findViewById(android.R.id.text1);
+                Animal zwierz = db.pobierz(Integer.parseInt(name.getText().toString()));
+                Intent intencja = new Intent (getApplicationContext(), DodajWpis.class);
+                intencja.putExtra("element", zwierz);
+                String id2 = Long.toString(id);
+                db.usun(id2);
+                //startActivityForResult (intencja, 3);
+                adapter.changeCursor(db.lista());
+                adapter.notifyDataSetChanged();
+                return true;
             }
         });
     }
