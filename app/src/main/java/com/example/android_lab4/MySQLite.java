@@ -65,7 +65,7 @@ public class MySQLite extends SQLiteOpenHelper {
         return i;
     }
 
-    public Animal pobierz (int id){
+        public Animal pobierz (int id){
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor = db.query("animals",
